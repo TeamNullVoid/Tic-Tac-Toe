@@ -41,11 +41,20 @@ class Text:
 
 
 class Button:
-    def __init__(self, text, text_size, size, text_color, color, pos=(-1, -1, -1, -1, -1, -1)):
+    def __init__(self, text, text_size, size, text_color, color, callback, pos=(-1, -1, -1, -1, -1, -1)):
         self.value = pygame.Surface(size)
         self.value.fill(colors.bg_color)
+        self.callback = callback
+        self.text = text
         self.rect = pygame.draw.rect(self.value, color, pygame.Rect(0, 0, *size), 0, dimen.button_radius)
         pygame.draw.rect(self.value, colors.primary, pygame.Rect(0, 0, *size), dimen.button_border_width, dimen.button_radius)
         set_position(self.rect, pos[0], pos[1], pos[2], pos[3], pos[4], pos[5])
         text_v = Text(text, text_size, text_color, (self.rect.width // 2, self.rect.height // 2, -1, -1, -1, -1))
         self.value.blit(text_v.value, text_v.rect)
+
+    def click(self, event):
+        x, y = pygame.mouse.get_pos()
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 1:
+                if self.rect.collidepoint(x, y):
+                    self.callback(self)
