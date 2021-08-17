@@ -1,6 +1,7 @@
 window_size = (800, 800)
 button_size = (250, 60)
 music_pos = (-1, -1, -1, 24, window_size[0] - 42, -1)
+back_pos = (-1, -1, 42, 24, -1, -1)
 logo_pos = (window_size[0] // 2, -1, -1, 42, -1, -1)
 title_pos = (window_size[0] // 2, -1, -1, 325, -1, -1)
 single_pl_btn_pos = (window_size[0] // 2, -1, -1, 450, -1, -1)
@@ -8,7 +9,8 @@ multi_pl_off_pos = (window_size[0] // 2, -1, -1, 540, -1, -1)
 multi_pl_on_pos = (window_size[0] // 2, -1, -1, 630, -1, -1)
 cpy_pos = (window_size[0] // 2, -1, -1, -1, -1, window_size[1] - 24)
 size_symbol = 42
-size_text = 62
+size_heading = 62
+size_heading_small = 52
 size_copy_msg = 18
 button_radius = 12
 button_text_size = 24

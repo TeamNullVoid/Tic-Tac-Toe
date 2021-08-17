@@ -30,14 +30,23 @@ class Image:
 
 
 class Text:
-    def __init__(self, text, size, color, pos=(-1, -1, -1, -1, -1, -1), sys_font=None, f='Ubuntu'):
+    def __init__(self, text, size, color, pos=(-1, -1, -1, -1, -1, -1), sys_font=None, f='Ubuntu', callback=None):
         if sys_font is not None:
             font = pygame.font.SysFont(sys_font, size)
         else:
             font = pygame.font.Font(f'assets/{f}-Regular.ttf', size)
+        self.text = text
         self.value = font.render(text, size, color)
         self.rect = self.value.get_rect()
+        self.callback = callback
         set_position(self.rect, pos[0], pos[1], pos[2], pos[3], pos[4], pos[5])
+
+    def click(self, event):
+        x, y = pygame.mouse.get_pos()
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 1:
+                if self.rect.collidepoint(x, y):
+                    self.callback(self)
 
 
 class Button:
@@ -51,6 +60,23 @@ class Button:
         set_position(self.rect, pos[0], pos[1], pos[2], pos[3], pos[4], pos[5])
         text_v = Text(text, text_size, text_color, (self.rect.width // 2, self.rect.height // 2, -1, -1, -1, -1))
         self.value.blit(text_v.value, text_v.rect)
+
+    def click(self, event):
+        x, y = pygame.mouse.get_pos()
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 1:
+                if self.rect.collidepoint(x, y):
+                    self.callback(self)
+
+
+class TextButton:
+    def __init__(self, text, size, color, callback, pos=(-1, -1, -1, -1, -1, -1)):
+        font = pygame.font.SysFont('segoeuisymbol', size)
+        self.text = text
+        self.value = font.render(text, size, color)
+        self.rect = self.value.get_rect()
+        self.callback = callback
+        set_position(self.rect, pos[0], pos[1], pos[2], pos[3], pos[4], pos[5])
 
     def click(self, event):
         x, y = pygame.mouse.get_pos()
