@@ -1,0 +1,9 @@
+app_name = 'Tic Tac Toe'
+music_symbol = '♬'
+text_play_on = 'Multiplayer Online'
+text_play_off = 'Multiplayer Offline'
+text_play_ai = 'Play against AI'
+text_with_friends = 'Play online with friends'
+back_symbol = '⮜'
+text_cpy_msg = "© Aditya Nagyal, Raghav Gupta, Nikhil"
+hint_code = 'Enter Game Code'

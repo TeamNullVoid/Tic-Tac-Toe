@@ -2,6 +2,7 @@ import pygame
 
 import colors
 import dimen
+import string
 
 
 def set_position(rect, centerx, centery, left, top, right, bottom):
@@ -84,3 +85,47 @@ class TextButton:
             if event.button == 1:
                 if self.rect.collidepoint(x, y):
                     self.callback(self)
+
+
+class InputField:
+    def __init__(self, text, size, pos=(-1, -1, -1, -1, -1, -1)):
+        self.active = False
+        self.value = pygame.Surface(size)
+        self.value.fill(colors.bg_color)
+        self.text = text
+        self.size = size
+        self.rect = pygame.draw.rect(self.value, colors.white, pygame.Rect(0, 0, *size), 0, dimen.button_radius)
+        pygame.draw.rect(self.value, colors.red_dark, pygame.Rect(0, 0, *size), dimen.button_border_width, dimen.button_radius)
+        self.font = pygame.font.Font('assets/Righteous-Regular.ttf', dimen.button_text_size)
+        self.text_surface = self.font.render(text, True, colors.black)
+        self.text_rect = self.text_surface.get_rect()
+        set_position(self.text_rect,-1, self.rect.height // 2, 20, -1, -1, -1)
+        self.value.blit(self.text_surface, self.text_rect)
+        set_position(self.rect, pos[0], pos[1], pos[2], pos[3], pos[4], pos[5])
+
+    def handle_event(self, event):
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if self.rect.collidepoint(event.pos):
+                self.active = not self.active
+            else:
+                self.active = False
+
+        if event.type == pygame.KEYDOWN:
+            if self.active:
+                if event.key == pygame.K_BACKSPACE:
+                    if self.text == string.hint_code:
+                        pass
+                    else:
+                        self.text = self.text[:-2]
+                    if self.text == '':
+                        self.text = string.hint_code
+                else:
+                    if len(self.text) == 12:
+                        return
+                    if self.text == string.hint_code:
+                        self.text = ''
+                    self.text += event.unicode.upper() + ' '
+                pygame.draw.rect(self.value, colors.white, pygame.Rect(0, 0, *self.size), 0, dimen.button_radius)
+                pygame.draw.rect(self.value, colors.red_dark, pygame.Rect(0, 0, *self.size), dimen.button_border_width, dimen.button_radius)
+                self.text_surface = self.font.render(self.text, True, colors.black)
+                self.value.blit(self.text_surface, self.text_rect)

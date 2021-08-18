@@ -1,19 +1,11 @@
 import sys
 import pygame.mixer as mixer
 from components import *
+from string import *
 import dimen
 
-app_name = 'Tic Tac Toe'
-music_symbol = '♬'
-text_play_on = 'Multiplayer Online'
-text_play_off = 'Multiplayer Offline'
-text_play_ai = 'Play against AI'
-text_with_friends = 'Play online with friends'
-back_symbol = '⮜'
-text_cpy_msg = "© Aditya Nagyal, Raghav Gupta, Nikhil"
-
-mixer.music.load('assets/button_click.mp3')
-mixer.music.set_volume(1)
+mixer.music.load('assets/Boney M Daddy cool.mp3')
+mixer.music.set_volume(0.5)
 
 
 def button_callback(button: Button):
@@ -26,6 +18,12 @@ def symbol_callback(text: Text):
     mixer.music.play()
     if text.text == back_symbol:
         game_state.currentState = 'main'
+
+
+def input_callback(input: InputField):
+    mixer.music.play()
+    print("called", input.text)
+    pass
 
 
 main_screen_components = [
@@ -43,6 +41,7 @@ online_connect_components = [
     Text(music_symbol, dimen.size_symbol, colors.primary, dimen.music_pos, sys_font='segoeuisymbol'),
     Image('assets/logo_big.png', dimen.logo_pos),
     Text(text_with_friends, dimen.size_heading_small, colors.primary, dimen.title_pos, f='Righteous'),
+    InputField(hint_code, dimen.input_size, dimen.code_input_pos)
 ]
 
 online_connect_components_rect = [component.rect for component in online_connect_components]
@@ -50,9 +49,9 @@ main_screen_components_rect = [component.rect for component in main_screen_compo
 
 
 class GameState:
-    def __init__(self, window: pygame.Surface, state):
+    def __init__(self, win: pygame.Surface, state):
         self.currentState = state
-        self.window = window
+        self.window = win
 
     def draw_main(self):
         for event in pygame.event.get():
@@ -71,6 +70,7 @@ class GameState:
                 sys.exit(0)
 
             online_connect_components[0].click(event)
+            online_connect_components[4].handle_event(event)
 
         for component, rect in zip(online_connect_components, online_connect_components_rect):
             self.window.blit(component.value, rect)
