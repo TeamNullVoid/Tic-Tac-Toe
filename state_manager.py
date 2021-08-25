@@ -1,5 +1,7 @@
 import sys
 import pygame.mixer as mixer
+
+import colors
 from components import *
 from string import *
 import dimen
@@ -9,19 +11,19 @@ mixer.music.set_volume(0.5)
 
 
 def button_callback(button: Button):
-    mixer.music.play()
+    # mixer.music.play()
     if button.text == text_play_on:
         game_state.currentState = 'online'
 
 
 def symbol_callback(text: Text):
-    mixer.music.play()
+    # mixer.music.play()
     if text.text == back_symbol:
         game_state.currentState = 'main'
 
 
 def input_callback(input: InputField):
-    mixer.music.play()
+    # mixer.music.play()
     print("called", input.text)
     pass
 
@@ -41,7 +43,10 @@ online_connect_components = [
     Text(music_symbol, dimen.size_symbol, colors.primary, dimen.music_pos, sys_font='segoeuisymbol'),
     Image('assets/logo_big.png', dimen.logo_pos),
     Text(text_with_friends, dimen.size_heading_small, colors.primary, dimen.title_pos, f='Righteous'),
-    InputField(hint_code, dimen.input_size, dimen.code_input_pos)
+    InputField(hint_code, dimen.input_size, dimen.code_input_pos),
+    Button(text_join, dimen.button_text_size, dimen.button_small, colors.white, colors.red, button_callback, dimen.join_button_pos),
+    Text(text_or, dimen.size_text_normal, colors.black, dimen.or_pos),
+    Button(text_create, dimen.button_text_size, dimen.button_size,colors.white, colors.red, button_callback, dimen.create_btn_pos)
 ]
 
 online_connect_components_rect = [component.rect for component in online_connect_components]

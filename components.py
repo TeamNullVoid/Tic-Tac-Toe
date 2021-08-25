@@ -52,8 +52,8 @@ class Text:
 
 class Button:
     def __init__(self, text, text_size, size, text_color, color, callback, pos=(-1, -1, -1, -1, -1, -1)):
-        self.value = pygame.Surface(size)
-        self.value.fill(colors.bg_color)
+        self.value = pygame.Surface(size,pygame.SRCALPHA)
+        # self.value.fill(colors.bg_color)
         self.callback = callback
         self.text = text
         self.rect = pygame.draw.rect(self.value, color, pygame.Rect(0, 0, *size), 0, dimen.button_radius)
@@ -90,8 +90,7 @@ class TextButton:
 class InputField:
     def __init__(self, text, size, pos=(-1, -1, -1, -1, -1, -1)):
         self.active = False
-        self.value = pygame.Surface(size)
-        self.value.fill(colors.bg_color)
+        self.value = pygame.Surface(size,pygame.SRCALPHA)
         self.text = text
         self.size = size
         self.rect = pygame.draw.rect(self.value, colors.white, pygame.Rect(0, 0, *size), 0, dimen.button_radius)
@@ -116,15 +115,15 @@ class InputField:
                     if self.text == string.hint_code:
                         pass
                     else:
-                        self.text = self.text[:-2]
+                        self.text = self.text[:-3]
                     if self.text == '':
                         self.text = string.hint_code
                 else:
-                    if len(self.text) == 12:
+                    if len(self.text) == 18:
                         return
                     if self.text == string.hint_code:
                         self.text = ''
-                    self.text += event.unicode.upper() + ' '
+                    self.text += event.unicode.upper() + '  '
                 pygame.draw.rect(self.value, colors.white, pygame.Rect(0, 0, *self.size), 0, dimen.button_radius)
                 pygame.draw.rect(self.value, colors.red_dark, pygame.Rect(0, 0, *self.size), dimen.button_border_width, dimen.button_radius)
                 self.text_surface = self.font.render(self.text, True, colors.black)

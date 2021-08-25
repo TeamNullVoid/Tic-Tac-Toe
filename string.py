@@ -7,3 +7,6 @@ text_with_friends = 'Play online with friends'
 back_symbol = '⮜'
 text_cpy_msg = "© Aditya Nagyal, Raghav Gupta, Nikhil"
 hint_code = 'Enter Game Code'
+text_join = "Join"
+text_or = 'OR'
+text_create = 'Create Game'
