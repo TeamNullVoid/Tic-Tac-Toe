@@ -20,6 +20,7 @@ def button_callback(button: Button):
 def symbol_callback(text: Text):
     # mixer.music.play()
     if text.text == back_symbol:
+        single_player_components[1].clean()
         game_state.currentState = 'main'
 
 
@@ -30,7 +31,6 @@ def input_callback(input: InputField):
 
 
 main_screen_components = [
-    Text(music_symbol, dimen.size_symbol, colors.primary, dimen.music_pos, sys_font='segoeuisymbol', callback=symbol_callback),
     Image('assets/logo_big.png', dimen.logo_pos),
     Text(app_name, dimen.size_heading, colors.primary, dimen.title_pos, f='Righteous'),
     Button(text_play_ai, dimen.button_text_size, dimen.button_size, colors.white, colors.red, button_callback, dimen.single_pl_btn_pos),
@@ -41,7 +41,6 @@ main_screen_components = [
 
 online_connect_components = [
     TextButton(back_symbol, dimen.size_symbol, colors.primary, symbol_callback, dimen.back_pos),
-    Text(music_symbol, dimen.size_symbol, colors.primary, dimen.music_pos, sys_font='segoeuisymbol'),
     Image('assets/logo_big.png', dimen.logo_pos),
     Text(text_with_friends, dimen.size_heading_small, colors.primary, dimen.title_pos, f='Righteous'),
     InputField(hint_code, dimen.input_size, dimen.code_input_pos),
@@ -52,7 +51,6 @@ online_connect_components = [
 
 single_player_components = [
     TextButton(back_symbol, dimen.size_symbol, colors.primary, symbol_callback, dimen.back_pos),
-    Text(music_symbol, dimen.size_symbol, colors.primary, dimen.music_pos, sys_font='segoeuisymbol'),
     Board(dimen.board_size, dimen.board_pos, dimen.board_mat)
 ]
 
@@ -72,7 +70,7 @@ class GameState:
                 sys.exit(0)
             main_screen_components[3].click(event)
             main_screen_components[4].click(event)
-            main_screen_components[5].click(event)
+            main_screen_components[2].click(event)
 
         for component, rect in zip(main_screen_components, main_screen_components_rect):
             self.window.blit(component.value, rect)
@@ -83,7 +81,7 @@ class GameState:
                 sys.exit(0)
 
             online_connect_components[0].click(event)
-            online_connect_components[4].handle_event(event)
+            online_connect_components[3].handle_event(event)
 
         for component, rect in zip(online_connect_components, online_connect_components_rect):
             self.window.blit(component.value, rect)
@@ -92,7 +90,8 @@ class GameState:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit(0)
-            online_connect_components[0].click(event)
+            single_player_components[0].click(event)
+            single_player_components[1].handle_event(event)
 
         for component, rect in zip(single_player_components, single_player_components_rect):
             self.window.blit(component.value, rect)

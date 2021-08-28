@@ -132,9 +132,36 @@ class InputField:
                 self.value.blit(self.text_surface, self.text_rect)
 
 
+def get_box_from_pos(pos):
+    x, y = pos[0], pos[1]
+    if 115 <= x <= 298 and 115 <= y <= 298:
+        return 0
+    elif 312 <= x <= 488 and 115 <= y <= 298:
+        return 1
+    elif 502 <= x <= 683 and 115 <= y <= 298:
+        return 2
+    elif 115 <= x <= 298 and 312 <= y <= 488:
+        return 3
+    elif 312 <= x <= 488 and 312 <= y <= 488:
+        return 4
+    elif 502 <= x <= 683 and 312 <= y <= 488:
+        return 5
+    elif 115 <= x <= 298 and 502 <= y <= 683:
+        return 6
+    elif 312 <= x <= 488 and 502 <= y <= 683:
+        return 7
+    elif 502 <= x <= 683 and 502 <= y <= 683:
+        return 8
+    else:
+        return None
+
+
 class Board:
     def __init__(self, size, pos, lines):
         self.checked = [0 for _ in range(9)]
+        self.size = size
+        self.pos = pos
+        self.lines = lines
         self.value = pygame.Surface(size, pygame.SRCALPHA)
         self.value.fill(colors.black)
         for x in range(0, len(lines), 2):
@@ -148,8 +175,41 @@ class Board:
         else:
             return True
 
+    def mark_circle(self, box):
+        if box == 0:
+            pos = (91.5, 91.5)
+        elif box == 1:
+            pos = (288.5, 91.5)
+        elif box == 2:
+            pos = (478.5, 91.5)
+        elif box == 3:
+            pos = (91.5, 288.5)
+        elif box == 4:
+            pos = (288.5, 288.5)
+        elif box == 5:
+            pos = (478.5, 288.5)
+        elif box == 6:
+            pos = (91.5, 478.5)
+        elif box == 7:
+            pos = (288.5, 478.5)
+        elif box == 8:
+            pos = (478.5, 478.5)
+        else:
+            pos = (-dimen.circle_rad, -dimen.circle_rad)
+        pygame.draw.circle(self.value, colors.circle, pos, dimen.circle_rad, dimen.board_thk)
+        pass
+
     def check(self, pos, player):
         if not self.is_checked(pos):
             self.checked[pos] = player
         else:
             print("Position Already Marked")
+
+    def handle_event(self, event):
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            box = get_box_from_pos(event.pos)
+            # if box is not None:
+            #     self.mark_circle(box)
+
+    def clean(self):
+        self.__init__(self.size, self.pos, self.lines)

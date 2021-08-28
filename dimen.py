@@ -26,3 +26,4 @@ size_text_normal = 24
 button_radius = 12
 button_text_size = 24
 button_border_width = 3
+circle_rad = 60
