@@ -2,7 +2,7 @@ import sys
 import pygame.mixer as mixer
 
 from components import *
-from string import *
+from string_vars import *
 import dimen
 
 mixer.music.load('assets/Boney M Daddy cool.mp3')

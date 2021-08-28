@@ -2,7 +2,7 @@ import pygame
 
 import colors
 import dimen
-import string
+import string_vars
 
 
 def set_position(rect, centerx, centery, left, top, right, bottom):
@@ -112,17 +112,17 @@ class InputField:
         if event.type == pygame.KEYDOWN:
             if self.active:
                 if event.key == pygame.K_BACKSPACE:
-                    if self.text == string.hint_code:
+                    if self.text == string_vars.hint_code:
                         pass
                     else:
                         self.text = self.text[:-3]
                     if self.text == '':
-                        self.text = string.hint_code
+                        self.text = string_vars.hint_code
                         self.text_color = colors.grey
                 else:
                     if len(self.text) == 18:
                         return
-                    if self.text == string.hint_code:
+                    if self.text == string_vars.hint_code:
                         self.text = ''
                         self.text_color = colors.black
                     self.text += event.unicode.upper() + '  '
