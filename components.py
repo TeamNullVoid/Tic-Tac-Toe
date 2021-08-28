@@ -163,7 +163,7 @@ class Board:
         self.pos = pos
         self.lines = lines
         self.value = pygame.Surface(size, pygame.SRCALPHA)
-        self.value.fill(colors.black)
+
         for x in range(0, len(lines), 2):
             pygame.draw.line(self.value, colors.primary, lines[x], lines[x + 1], dimen.board_thk)
         self.rect = self.value.get_rect()
@@ -174,6 +174,58 @@ class Board:
             return False
         else:
             return True
+
+
+    def mark_cross(self, box):
+        if box == 0:
+            pos = (150,30)
+            pos1 = (30,150)
+            pos2 = (33 ,33)
+            pos3 = (153,153)
+        elif box == 1:
+            pos = (347, 30)
+            pos1 = (227, 150)
+            pos2 = (223, 33)
+            pos3 = (343, 153)
+        elif box == 2:
+            pos = (544, 30)
+            pos1 = (424, 150)
+            pos2 = (413, 33)
+            pos3 = (533, 153)
+        elif box == 3:
+            pos = (150, 227)
+            pos1 = (30, 347)
+            pos2 = (33, 230)
+            pos3 = (153, 350)
+        elif box == 4:
+            pos = (347, 227)
+            pos1 = (227, 347)
+            pos2 = (223, 230)
+            pos3 = (343, 350)
+        elif box == 5:
+            pos = (544, 227)
+            pos1 = (424, 347)
+            pos2 = (413, 230)
+            pos3 = (533, 350)
+        elif box == 6:
+            pos = (150, 424)
+            pos1 = (30, 544)
+            pos2 = (33, 427)
+            pos3 = (153, 547)
+        elif box == 7:
+            pos = (347, 424)
+            pos1 = (227, 544)
+            pos2 = (223, 427)
+            pos3 = (343, 547)
+        elif box ==8:
+            pos = (544, 424)
+            pos1 = (424, 544)
+            pos2 = (413, 427)
+            pos3 = (533, 547)
+
+        pygame.draw.line(self.value, colors.cross, pos, pos1, 15)
+        pygame.draw.line(self.value, colors.cross, pos2, pos3, 15)
+
 
     def mark_circle(self, box):
         if box == 0:
@@ -208,8 +260,10 @@ class Board:
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             box = get_box_from_pos(event.pos)
-            # if box is not None:
-            #     self.mark_circle(box)
+            print(event.pos)
+            if box is not None:
+                self.mark_cross(box)
+
 
     def clean(self):
         self.__init__(self.size, self.pos, self.lines)
