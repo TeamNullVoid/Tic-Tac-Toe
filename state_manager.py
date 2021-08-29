@@ -3,6 +3,7 @@ import sys
 import pygame.event
 import pygame.mixer as mixer
 
+import colors
 from components import *
 from string_vars import *
 import dimen
@@ -12,6 +13,7 @@ mixer.music.set_volume(0.5)
 
 player = 2
 chosen_w = None
+m_player = 2
 
 
 def board_callback(board: Board, box: int):
@@ -23,6 +25,20 @@ def board_callback(board: Board, box: int):
         player = 2
     else:
         player = 1
+
+
+def mp_board_callback(board: Board, box: int):
+    global m_player
+    if m_player is None:
+        return
+    done = board.check(box, m_player)
+    if done:
+        if m_player == 1:
+            m_player = 2
+        else:
+            m_player = 1
+
+        multiplayer_components[2].update(text_x_turn if m_player == 2 else text_o_turn, colors.cross if m_player == 2 else colors.circle)
 
 
 def button_callback(button: Button):
@@ -38,6 +54,9 @@ def button_callback(button: Button):
         print("Start button clicked, Single player")
         if chosen_w == 1 or chosen_w == 2:
             game_state.currentState = 'single_r'
+    elif button.text == text_play_off:
+        print("Play Offline")
+        game_state.currentState = 'offline'
 
 
 def select_cross(cross: Cross):
@@ -64,9 +83,12 @@ def symbol_callback(text: Text):
     mixer.music.play()
     if text.text == back_symbol:
         single_player_components[1].clean()
-        global chosen_w, player
+        multiplayer_components[1].clean()
+        global chosen_w, player, m_player
         player = 2
+        m_player = 2
         chosen_w = None
+        multiplayer_components[2].update(text_x_turn if m_player == 2 else text_o_turn, colors.cross if m_player == 2 else colors.circle)
         single_player_selection_screen[2].unselect()
         single_player_selection_screen[3].unselect()
         game_state.currentState = 'main'
@@ -102,6 +124,12 @@ single_player_components = [
     Board(dimen.board_size, dimen.board_pos, dimen.board_mat, board_callback)
 ]
 
+multiplayer_components = [
+    TextButton(back_symbol, dimen.size_symbol, colors.primary, symbol_callback, dimen.back_pos),
+    Board(dimen.board_size, dimen.board_pos, dimen.board_mat, mp_board_callback),
+    Text(text_x_turn, dimen.size_heading_small, colors.cross, dimen.turn_pos, f='Righteous')
+]
+
 single_player_selection_screen = [
     TextButton(back_symbol, dimen.size_symbol, colors.primary, symbol_callback, dimen.back_pos),
     Text(text_choose_weapon, dimen.size_heading_small, colors.primary, dimen.choose_pos, f='Righteous'),
@@ -115,6 +143,7 @@ online_connect_components_rect = [component.rect for component in online_connect
 main_screen_components_rect = [component.rect for component in main_screen_components]
 single_player_components_rect = [component.rect for component in single_player_components]
 single_player_selection_screen_rect = [component.rect for component in single_player_selection_screen]
+multiplayer_components_rect = [component.rect for component in multiplayer_components]
 
 
 class GameState:
@@ -166,6 +195,16 @@ class GameState:
         for component, rect in zip(single_player_components, single_player_components_rect):
             self.window.blit(component.value, rect)
 
+    def draw_multiplayer_offline(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit()
+            multiplayer_components[0].click(event)
+            multiplayer_components[1].handle_event(event)
+
+        for component, rect in zip(multiplayer_components, multiplayer_components_rect):
+            self.window.blit(component.value, rect)
+
     def handle_current_state(self):
         if self.currentState == 'main':
             self.draw_main()
@@ -175,6 +214,8 @@ class GameState:
             self.draw_single_screen()
         elif self.currentState == 'single_r':
             self.draw_single_r_screen()
+        elif self.currentState == 'offline':
+            self.draw_multiplayer_offline()
 
 
 window = pygame.display.set_mode(dimen.window_size)

@@ -37,10 +37,21 @@ class Text:
         else:
             font = pygame.font.Font(f'assets/{f}-Regular.ttf', size)
         self.text = text
+        self.color = color
+        self.font = font
+        self.size = size
         self.value = font.render(text, size, color)
         self.rect = self.value.get_rect()
         self.callback = callback
         set_position(self.rect, pos[0], pos[1], pos[2], pos[3], pos[4], pos[5])
+
+    def update(self, text, color=None):
+        if color is not None:
+            self.color = color
+        self.text = text
+        self.value.fill(colors.bg_color)
+        self.value = self.font.render(text, self.size, color)
+        self.rect = self.value.get_rect()
 
     def click(self, event):
         x, y = pygame.mouse.get_pos()
@@ -261,8 +272,10 @@ class Board:
                 self.mark_circle(pos, player)
             else:
                 self.mark_cross(pos, player)
+            return True
         else:
             print("Position Already Marked")
+            return False
 
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
