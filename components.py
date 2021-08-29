@@ -157,7 +157,8 @@ def get_box_from_pos(pos):
 
 
 class Board:
-    def __init__(self, size, pos, lines):
+    def __init__(self, size, pos, lines, callback):
+        self.callback = callback
         self.checked = [0 for _ in range(9)]
         self.size = size
         self.pos = pos
@@ -250,18 +251,21 @@ class Board:
         pygame.draw.circle(self.value, colors.circle, pos, dimen.circle_rad, dimen.board_thk)
         pass
 
+
     def check(self, pos, player):
         if not self.is_checked(pos):
             self.checked[pos] = player
+            if player == 1:
+                self.mark_circle(pos)
+            else:
+                self.mark_cross(pos)
         else:
             print("Position Already Marked")
 
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             box = get_box_from_pos(event.pos)
-            print(event.pos)
-            if box is not None:
-                self.mark_cross(box)
+            self.callback(self, box)
 
     def clean(self):
         self.__init__(self.size, self.pos, self.lines)

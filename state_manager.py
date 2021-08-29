@@ -13,6 +13,15 @@ mixer.music.set_volume(0.5)
 player = None
 chosen_w = None
 
+def board_callback(board: Board, box: int):
+    global player
+    if player == 1:
+        board.mark_circle(box)
+        player = 2
+    else:
+        board.mark_cross(box)
+        player = 1
+
 
 def button_callback(button: Button):
     # mixer.music.play()
@@ -81,7 +90,7 @@ online_connect_components = [
 
 single_player_components = [
     TextButton(back_symbol, dimen.size_symbol, colors.primary, symbol_callback, dimen.back_pos),
-    Board(dimen.board_size, dimen.board_pos, dimen.board_mat)
+    Board(dimen.board_size, dimen.board_pos, dimen.board_mat, board_callback)
 ]
 
 single_player_selection_screen = [
