@@ -10,6 +10,8 @@ import dimen
 mixer.music.load('assets/Boney M Daddy cool.mp3')
 mixer.music.set_volume(0.5)
 
+chosen_weapon = None
+
 
 def button_callback(button: Button):
     # mixer.music.play()
@@ -80,8 +82,9 @@ multiplayer_offline_components = [
     TextButton(back_symbol, dimen.size_symbol, colors.primary, symbol_callback, dimen.back_pos),
     Text(text_choose_weapon, dimen.size_heading_small, colors.primary, dimen.choose_pos, f='Righteous'),
     Circle(dimen.cw_size, dimen.cw_center, dimen.cw_radius, dimen.cw_width, dimen.cw_pos, select_circle),
-    Cross(dimen.cw_size, select_cross,dimen.cw_c_pos),
-    Button(text_start, dimen.button_text_size, dimen.button_size, colors.white, colors.red, start_single_pl, dimen.start_pos)
+    Cross(dimen.cw_size, select_cross, dimen.cw_c_pos),
+    Button(text_start, dimen.button_text_size, dimen.button_size, colors.white, colors.red, start_single_pl, dimen.start_pos),
+    Text(text_play_ai, dimen.size_heading_small, colors.primary, dimen.play_ai_pos, f='Righteous')
 ]
 
 online_connect_components_rect = [component.rect for component in online_connect_components]

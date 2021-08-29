@@ -174,57 +174,57 @@ class Board:
         else:
             return True
 
-
     def mark_cross(self, box):
         if box == 0:
-            pos = (150,30)
-            pos1 = (30,150)
-            pos2 = (33 ,33)
-            pos3 = (153,153)
+            pos = (40, 40)
+            pos1 = (143, 143)
+            pos2 = (143, 40)
+            pos3 = (40, 143)
         elif box == 1:
-            pos = (347, 30)
-            pos1 = (227, 150)
-            pos2 = (223, 33)
-            pos3 = (343, 153)
+            pos = (235, 40)
+            pos1 = (338, 143)
+            pos2 = (338, 40)
+            pos3 = (235, 143)
         elif box == 2:
-            pos = (544, 30)
-            pos1 = (424, 150)
-            pos2 = (413, 33)
-            pos3 = (533, 153)
+            pos = (430, 40)
+            pos1 = (533, 143)
+            pos2 = (533, 40)
+            pos3 = (430, 143)
         elif box == 3:
-            pos = (150, 227)
-            pos1 = (30, 347)
-            pos2 = (33, 230)
-            pos3 = (153, 350)
+            pos = (40, 235)
+            pos1 = (143, 338)
+            pos2 = (143, 235)
+            pos3 = (40, 338)
         elif box == 4:
-            pos = (347, 227)
-            pos1 = (227, 347)
-            pos2 = (223, 230)
-            pos3 = (343, 350)
+            pos = (235, 235)
+            pos1 = (338, 338)
+            pos2 = (338, 235)
+            pos3 = (235, 338)
         elif box == 5:
-            pos = (544, 227)
-            pos1 = (424, 347)
-            pos2 = (413, 230)
-            pos3 = (533, 350)
+            pos = (430, 235)
+            pos1 = (533, 338)
+            pos2 = (533, 235)
+            pos3 = (430, 338)
         elif box == 6:
-            pos = (150, 424)
-            pos1 = (30, 544)
-            pos2 = (33, 427)
-            pos3 = (153, 547)
+            pos = (40, 430)
+            pos1 = (143, 533)
+            pos2 = (143, 430)
+            pos3 = (40, 533)
         elif box == 7:
-            pos = (347, 424)
-            pos1 = (227, 544)
-            pos2 = (223, 427)
-            pos3 = (343, 547)
-        elif box ==8:
-            pos = (544, 424)
-            pos1 = (424, 544)
-            pos2 = (413, 427)
-            pos3 = (533, 547)
+            pos = (235, 430)
+            pos1 = (338, 533)
+            pos2 = (338, 430)
+            pos3 = (235, 533)
+        elif box == 8:
+            pos = (430, 430)
+            pos1 = (533, 533)
+            pos2 = (533, 430)
+            pos3 = (430, 533)
+        else:
+            pos, pos1, pos2, pos3 = [(0, 0) for _ in range(4)]
 
         pygame.draw.line(self.value, colors.cross, pos, pos1, 15)
         pygame.draw.line(self.value, colors.cross, pos2, pos3, 15)
-
 
     def mark_circle(self, box):
         if box == 0:
@@ -262,7 +262,6 @@ class Board:
             print(event.pos)
             if box is not None:
                 self.mark_cross(box)
-
 
     def clean(self):
         self.__init__(self.size, self.pos, self.lines)
