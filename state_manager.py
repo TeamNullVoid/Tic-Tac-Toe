@@ -7,7 +7,7 @@ from components import *
 from string_vars import *
 import dimen
 
-mixer.music.load('assets/Boney M Daddy cool.mp3')
+mixer.music.load('assets/button_click.mp3')
 mixer.music.set_volume(0.5)
 
 player = 2
@@ -26,7 +26,7 @@ def board_callback(board: Board, box: int):
 
 
 def button_callback(button: Button):
-    # mixer.music.play()
+    mixer.music.play()
     print("button clicked")
     if button.text == text_play_on:
         print("Play online clicked")
@@ -42,6 +42,7 @@ def button_callback(button: Button):
 
 def select_cross(cross: Cross):
     print("Cross Selected")
+    mixer.music.play()
     single_player_selection_screen[2].unselect()
     cross.select()
     global chosen_w
@@ -51,6 +52,7 @@ def select_cross(cross: Cross):
 
 def select_circle(circle: Circle):
     print("Circle Selected")
+    mixer.music.play()
     single_player_selection_screen[3].unselect()
     circle.select()
     global chosen_w
@@ -59,7 +61,7 @@ def select_circle(circle: Circle):
 
 
 def symbol_callback(text: Text):
-    # mixer.music.play()
+    mixer.music.play()
     if text.text == back_symbol:
         single_player_components[1].clean()
         global chosen_w, player
@@ -71,7 +73,7 @@ def symbol_callback(text: Text):
 
 
 def input_callback(_: InputField):
-    # mixer.music.play()
+    mixer.music.play()
     print("called", _.text)
     pass
 
