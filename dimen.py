@@ -7,6 +7,7 @@ board_mat = [(190, 0), (190, 570), (380, 0), (380, 570), (0, 190), (570, 190), (
 music_pos = (-1, -1, -1, 24, window_size[0] - 42, -1)
 back_pos = (-1, -1, 42, 24, -1, -1)
 choose_pos = (window_size[0] // 2, -1, -1, 150, -1, -1)
+hooray_pos = (window_size[0] // 2, -1, -1, 250, -1, -1)
 logo_pos = (window_size[0] // 2, -1, -1, 42, -1, -1)
 title_pos = (window_size[0] // 2, -1, -1, 325, -1, -1)
 board_pos = (window_size[0] // 2, window_size[0] // 2, -1, -1, -1, -1)

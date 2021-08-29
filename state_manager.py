@@ -3,7 +3,6 @@ import sys
 import pygame.event
 import pygame.mixer as mixer
 
-import colors
 from components import *
 from string_vars import *
 import dimen
@@ -139,9 +138,17 @@ single_player_selection_screen = [
     Text(text_play_ai, dimen.size_heading_small, colors.primary, dimen.play_ai_pos, f='Righteous')
 ]
 
+start_new_game_screen = [
+    TextButton(back_symbol, dimen.size_symbol, colors.primary, symbol_callback, dimen.back_pos),
+    Image('assets/hooray.png', dimen.hooray_pos),
+    Text("You Won!", dimen.size_heading_small, colors.primary, dimen.choose_pos, f='Righteous'),
+    Button(text_new_game, dimen.button_text_size, dimen.button_size, colors.white, colors.red, start_single_pl, dimen.start_pos),
+]
+
 online_connect_components_rect = [component.rect for component in online_connect_components]
 main_screen_components_rect = [component.rect for component in main_screen_components]
 single_player_components_rect = [component.rect for component in single_player_components]
+start_new_game_screen_rect = [component.rect for component in start_new_game_screen]
 single_player_selection_screen_rect = [component.rect for component in single_player_selection_screen]
 multiplayer_components_rect = [component.rect for component in multiplayer_components]
 
@@ -150,6 +157,14 @@ class GameState:
     def __init__(self, win: pygame.Surface, state):
         self.currentState = state
         self.window = win
+
+    def draw_end_screen(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit(0)
+        for component,rect in zip(start_new_game_screen, start_new_game_screen_rect):
+            self.window.blit(component.value, rect)
+
 
     def draw_main(self):
         for event in pygame.event.get():
@@ -216,6 +231,8 @@ class GameState:
             self.draw_single_r_screen()
         elif self.currentState == 'offline':
             self.draw_multiplayer_offline()
+        elif self.currentState == 'end':
+            self.draw_end_screen()
 
 
 window = pygame.display.set_mode(dimen.window_size)
