@@ -29,14 +29,14 @@ def start_single_pl(button: Button):
 
 def select_cross(cross: Cross):
     print("Cross Selected")
-    multiplayer_offline_components[2].unselect()
+    single_player_selection_screen[2].unselect()
     cross.select()
     pass
 
 
 def select_circle(circle: Circle):
     print("Circle Selected")
-    multiplayer_offline_components[3].unselect()
+    single_player_selection_screen[3].unselect()
     circle.select()
     pass
 
@@ -78,7 +78,7 @@ single_player_components = [
     Board(dimen.board_size, dimen.board_pos, dimen.board_mat)
 ]
 
-multiplayer_offline_components = [
+single_player_selection_screen = [
     TextButton(back_symbol, dimen.size_symbol, colors.primary, symbol_callback, dimen.back_pos),
     Text(text_choose_weapon, dimen.size_heading_small, colors.primary, dimen.choose_pos, f='Righteous'),
     Circle(dimen.cw_size, dimen.cw_center, dimen.cw_radius, dimen.cw_width, dimen.cw_pos, select_circle),
@@ -90,7 +90,7 @@ multiplayer_offline_components = [
 online_connect_components_rect = [component.rect for component in online_connect_components]
 main_screen_components_rect = [component.rect for component in main_screen_components]
 single_player_components_rect = [component.rect for component in single_player_components]
-multiplayer_offline_components_rect = [component.rect for component in multiplayer_offline_components]
+single_player_selection_screen_rect = [component.rect for component in single_player_selection_screen]
 
 
 class GameState:
@@ -135,11 +135,11 @@ class GameState:
             if event.type == pygame.QUIT:
                 sys.exit(0)
 
-            multiplayer_offline_components[0].click(event)
-            multiplayer_offline_components[2].handle_click(event)
-            multiplayer_offline_components[3].handle_click(event)
+            single_player_selection_screen[0].click(event)
+            single_player_selection_screen[2].handle_click(event)
+            single_player_selection_screen[3].handle_click(event)
 
-        for component, rect in zip(multiplayer_offline_components, multiplayer_offline_components_rect):
+        for component, rect in zip(single_player_selection_screen, single_player_selection_screen_rect):
             self.window.blit(component.value, rect)
 
     def handle_current_state(self):
