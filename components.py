@@ -163,7 +163,6 @@ class Board:
         self.pos = pos
         self.lines = lines
         self.value = pygame.Surface(size, pygame.SRCALPHA)
-        self.value.fill(colors.black)
         for x in range(0, len(lines), 2):
             pygame.draw.line(self.value, colors.primary, lines[x], lines[x + 1], dimen.board_thk)
         self.rect = self.value.get_rect()
@@ -208,8 +207,56 @@ class Board:
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             box = get_box_from_pos(event.pos)
-            # if box is not None:
-            #     self.mark_circle(box)
+            if box is not None:
+                self.mark_circle(box)
 
     def clean(self):
         self.__init__(self.size, self.pos, self.lines)
+
+
+class Cross:
+    def __init__(self, size, callback, pos):
+        self.value = pygame.Surface(size, pygame.SRCALPHA)
+        self.callback = callback
+        self.size = size
+        pygame.draw.line(self.value, colors.cross, (50, 50), (size[0] - 50, size[1] - 50), dimen.cw_width + 2)
+        pygame.draw.line(self.value, colors.cross, (size[0] - 50, 50), (50, size[1] - 50), dimen.cw_width + 2)
+        self.rect = self.value.get_rect()
+        set_position(self.rect, pos[0], pos[1], pos[2], pos[3], pos[4], pos[5])
+        pass
+
+    def handle_click(self, event):
+        x, y = pygame.mouse.get_pos()
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 1:
+                if self.rect.collidepoint(x, y):
+                    self.callback(self)
+
+    def select(self):
+        pygame.draw.rect(self.value, colors.cross, pygame.Rect(0, 0, *self.size), dimen.cw_select_width, dimen.button_radius)
+
+    def unselect(self):
+        pygame.draw.rect(self.value, colors.bg_color, pygame.Rect(0, 0, *self.size), dimen.cw_select_width, dimen.button_radius)
+
+
+class Circle:
+    def __init__(self, size, center, radius, width, pos, callback):
+        self.size = size
+        self.value = pygame.Surface(size, pygame.SRCALPHA)
+        self.callback = callback
+        pygame.draw.circle(self.value, colors.circle, center, radius, width)
+        self.rect = self.value.get_rect()
+        set_position(self.rect, pos[0], pos[1], pos[2], pos[3], pos[4], pos[5])
+
+    def handle_click(self, event):
+        x, y = pygame.mouse.get_pos()
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 1:
+                if self.rect.collidepoint(x, y):
+                    self.callback(self)
+
+    def select(self):
+        pygame.draw.rect(self.value, colors.circle, pygame.Rect(0, 0, *self.size), dimen.cw_select_width, dimen.button_radius)
+
+    def unselect(self):
+        pygame.draw.rect(self.value, colors.bg_color, pygame.Rect(0, 0, *self.size), dimen.cw_select_width, dimen.button_radius)

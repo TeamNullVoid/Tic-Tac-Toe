@@ -10,3 +10,5 @@ hint_code = 'Enter Game Code'
 text_join = "Join"
 text_or = 'OR'
 text_create = 'Create Game'
+text_choose_weapon = 'Choose Your Weapon'
+text_start = 'Start Game'

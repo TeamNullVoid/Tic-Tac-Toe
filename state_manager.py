@@ -1,4 +1,6 @@
 import sys
+
+import pygame.event
 import pygame.mixer as mixer
 
 from components import *
@@ -15,6 +17,26 @@ def button_callback(button: Button):
         game_state.currentState = 'online'
     elif button.text == text_play_ai:
         game_state.currentState = 'single'
+    elif button.text == text_play_off:
+        game_state.currentState = 'offline'
+
+
+def start_single_pl(button: Button):
+    pass
+
+
+def select_cross(cross: Cross):
+    print("Cross Selected")
+    multiplayer_offline_components[2].unselect()
+    cross.select()
+    pass
+
+
+def select_circle(circle: Circle):
+    print("Circle Selected")
+    multiplayer_offline_components[3].unselect()
+    circle.select()
+    pass
 
 
 def symbol_callback(text: Text):
@@ -54,9 +76,18 @@ single_player_components = [
     Board(dimen.board_size, dimen.board_pos, dimen.board_mat)
 ]
 
+multiplayer_offline_components = [
+    TextButton(back_symbol, dimen.size_symbol, colors.primary, symbol_callback, dimen.back_pos),
+    Text(text_choose_weapon, dimen.size_heading_small, colors.primary, dimen.choose_pos, f='Righteous'),
+    Circle(dimen.cw_size, dimen.cw_center, dimen.cw_radius, dimen.cw_width, dimen.cw_pos, select_circle),
+    Cross(dimen.cw_size, select_cross,dimen.cw_c_pos),
+    Button(text_start, dimen.button_text_size, dimen.button_size, colors.white, colors.red, start_single_pl, dimen.start_pos)
+]
+
 online_connect_components_rect = [component.rect for component in online_connect_components]
 main_screen_components_rect = [component.rect for component in main_screen_components]
 single_player_components_rect = [component.rect for component in single_player_components]
+multiplayer_offline_components_rect = [component.rect for component in multiplayer_offline_components]
 
 
 class GameState:
@@ -96,6 +127,18 @@ class GameState:
         for component, rect in zip(single_player_components, single_player_components_rect):
             self.window.blit(component.value, rect)
 
+    def draw_multiplayer_offline(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit(0)
+
+            multiplayer_offline_components[0].click(event)
+            multiplayer_offline_components[2].handle_click(event)
+            multiplayer_offline_components[3].handle_click(event)
+
+        for component, rect in zip(multiplayer_offline_components, multiplayer_offline_components_rect):
+            self.window.blit(component.value, rect)
+
     def handle_current_state(self):
         if self.currentState == 'main':
             self.draw_main()
@@ -103,6 +146,8 @@ class GameState:
             self.draw_multiplayer_online()
         elif self.currentState == 'single':
             self.draw_single_screen()
+        elif self.currentState == 'offline':
+            self.draw_multiplayer_offline()
 
 
 window = pygame.display.set_mode(dimen.window_size)
