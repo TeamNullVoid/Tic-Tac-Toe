@@ -10,7 +10,7 @@ import dimen
 mixer.music.load('assets/Boney M Daddy cool.mp3')
 mixer.music.set_volume(0.5)
 
-chosen_weapon = None
+player = None
 
 
 def button_callback(button: Button):
