@@ -142,7 +142,7 @@ start_new_game_screen = [
     TextButton(back_symbol, dimen.size_symbol, colors.primary, symbol_callback, dimen.back_pos),
     Image('assets/hooray.png', dimen.hooray_pos),
     Text("You Won!", dimen.size_heading_small, colors.primary, dimen.choose_pos, f='Righteous'),
-    Button(text_new_game, dimen.button_text_size, dimen.button_size, colors.white, colors.red, start_single_pl, dimen.start_pos),
+    Button(text_new_game, dimen.button_text_size, dimen.button_size, colors.white, colors.red, button_callback, dimen.start_pos),
 ]
 
 online_connect_components_rect = [component.rect for component in online_connect_components]
