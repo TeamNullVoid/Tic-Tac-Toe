@@ -10,16 +10,18 @@ import dimen
 mixer.music.load('assets/Boney M Daddy cool.mp3')
 mixer.music.set_volume(0.5)
 
-player = None
+player = 2
 chosen_w = None
+
 
 def board_callback(board: Board, box: int):
     global player
+    if player is None:
+        return
+    board.check(box, player)
     if player == 1:
-        board.mark_circle(box)
         player = 2
     else:
-        board.mark_cross(box)
         player = 1
 
 
@@ -60,12 +62,17 @@ def symbol_callback(text: Text):
     # mixer.music.play()
     if text.text == back_symbol:
         single_player_components[1].clean()
+        global chosen_w, player
+        player = 2
+        chosen_w = None
+        single_player_selection_screen[2].unselect()
+        single_player_selection_screen[3].unselect()
         game_state.currentState = 'main'
 
 
-def input_callback(input: InputField):
+def input_callback(_: InputField):
     # mixer.music.play()
-    print("called", input.text)
+    print("called", _.text)
     pass
 
 

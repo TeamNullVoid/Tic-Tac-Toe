@@ -1,5 +1,6 @@
 import pygame
 import colors
+import dimen
 import state_manager
 
 pygame.init()

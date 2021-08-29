@@ -170,12 +170,14 @@ class Board:
         set_position(self.rect, pos[0], pos[1], pos[2], pos[3], pos[4], pos[5])
 
     def is_checked(self, pos):
+        if pos is None:
+            return
         if self.checked[pos] == 0:
             return False
         else:
             return True
 
-    def mark_cross(self, box):
+    def mark_cross(self, box, player):
         if box == 0:
             pos = (40, 40)
             pos1 = (143, 143)
@@ -223,11 +225,11 @@ class Board:
             pos3 = (430, 533)
         else:
             pos, pos1, pos2, pos3 = [(0, 0) for _ in range(4)]
-
+        self.checked[box] = player
         pygame.draw.line(self.value, colors.cross, pos, pos1, 15)
         pygame.draw.line(self.value, colors.cross, pos2, pos3, 15)
 
-    def mark_circle(self, box):
+    def mark_circle(self, box, player):
         if box == 0:
             pos = (91.5, 91.5)
         elif box == 1:
@@ -248,27 +250,28 @@ class Board:
             pos = (478.5, 478.5)
         else:
             pos = (-dimen.circle_rad, -dimen.circle_rad)
+        self.checked[box] = player
         pygame.draw.circle(self.value, colors.circle, pos, dimen.circle_rad, dimen.board_thk)
         pass
-
 
     def check(self, pos, player):
         if not self.is_checked(pos):
             self.checked[pos] = player
             if player == 1:
-                self.mark_circle(pos)
+                self.mark_circle(pos, player)
             else:
-                self.mark_cross(pos)
+                self.mark_cross(pos, player)
         else:
             print("Position Already Marked")
 
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             box = get_box_from_pos(event.pos)
-            self.callback(self, box)
+            if box is not None:
+                self.callback(self, box)
 
     def clean(self):
-        self.__init__(self.size, self.pos, self.lines)
+        self.__init__(self.size, self.pos, self.lines, self.callback)
 
 
 class Cross:
