@@ -10,36 +10,42 @@ import dimen
 mixer.music.load('assets/Boney M Daddy cool.mp3')
 mixer.music.set_volume(0.5)
 
-player = None
+player = 2
+chosen_w = None
+
 
 def board_callback(board: Board, box: int):
     global player
+    if player is None:
+        return
+    board.check(box, player)
     if player == 1:
-        board.mark_circle(box)
         player = 2
     else:
-        board.mark_cross(box)
         player = 1
 
 
 def button_callback(button: Button):
     # mixer.music.play()
+    print("button clicked")
     if button.text == text_play_on:
+        print("Play online clicked")
         game_state.currentState = 'online'
     elif button.text == text_play_ai:
+        print("Play against ai clicked")
         game_state.currentState = 'single'
-    elif button.text == text_play_off:
-        game_state.currentState = 'offline'
-
-
-def start_single_pl(button: Button):
-    pass
+    elif button.text == text_start:
+        print("Start button clicked, Single player")
+        if chosen_w == 1 or chosen_w == 2:
+            game_state.currentState = 'single_r'
 
 
 def select_cross(cross: Cross):
     print("Cross Selected")
     single_player_selection_screen[2].unselect()
     cross.select()
+    global chosen_w
+    chosen_w = 2
     pass
 
 
@@ -47,6 +53,8 @@ def select_circle(circle: Circle):
     print("Circle Selected")
     single_player_selection_screen[3].unselect()
     circle.select()
+    global chosen_w
+    chosen_w = 1
     pass
 
 
@@ -54,12 +62,17 @@ def symbol_callback(text: Text):
     # mixer.music.play()
     if text.text == back_symbol:
         single_player_components[1].clean()
+        global chosen_w, player
+        player = 2
+        chosen_w = None
+        single_player_selection_screen[2].unselect()
+        single_player_selection_screen[3].unselect()
         game_state.currentState = 'main'
 
 
-def input_callback(input: InputField):
+def input_callback(_: InputField):
     # mixer.music.play()
-    print("called", input.text)
+    print("called", _.text)
     pass
 
 
@@ -92,20 +105,13 @@ single_player_selection_screen = [
     Text(text_choose_weapon, dimen.size_heading_small, colors.primary, dimen.choose_pos, f='Righteous'),
     Circle(dimen.cw_size, dimen.cw_center, dimen.cw_radius, dimen.cw_width, dimen.cw_pos, select_circle),
     Cross(dimen.cw_size, select_cross, dimen.cw_c_pos),
-    Button(text_start, dimen.button_text_size, dimen.button_size, colors.white, colors.red, start_single_pl, dimen.start_pos),
+    Button(text_start, dimen.button_text_size, dimen.button_size, colors.white, colors.red, button_callback, dimen.start_pos),
     Text(text_play_ai, dimen.size_heading_small, colors.primary, dimen.play_ai_pos, f='Righteous')
-]
-
-start_new_game_screen = [
-    TextButton(back_symbol, dimen.size_symbol, colors.primary, symbol_callback, dimen.back_pos),
-    Text("You Won!", dimen.size_heading_small, colors.primary, dimen.choose_pos, f='Righteous'),
-    Button(text_new_game, dimen.button_text_size, dimen.button_size, colors.white, colors.red, start_single_pl, dimen.start_pos),
 ]
 
 online_connect_components_rect = [component.rect for component in online_connect_components]
 main_screen_components_rect = [component.rect for component in main_screen_components]
 single_player_components_rect = [component.rect for component in single_player_components]
-start_new_game_screen_rect = [component.rect for component in start_new_game_screen]
 single_player_selection_screen_rect = [component.rect for component in single_player_selection_screen]
 
 
@@ -113,14 +119,6 @@ class GameState:
     def __init__(self, win: pygame.Surface, state):
         self.currentState = state
         self.window = win
-
-    def draw_end_screen(self):
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                sys.exit(0)
-        for component,rect in zip(start_new_game_screen, start_new_game_screen_rect):
-            self.window.blit(component.value, rect)
-
 
     def draw_main(self):
         for event in pygame.event.get():
@@ -148,22 +146,22 @@ class GameState:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit(0)
+            single_player_selection_screen[0].click(event)
+            single_player_selection_screen[2].handle_click(event)
+            single_player_selection_screen[3].handle_click(event)
+            single_player_selection_screen[4].click(event)
+
+        for component, rect in zip(single_player_selection_screen, single_player_selection_screen_rect):
+            self.window.blit(component.value, rect)
+
+    def draw_single_r_screen(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit(0)
             single_player_components[0].click(event)
             single_player_components[1].handle_event(event)
 
         for component, rect in zip(single_player_components, single_player_components_rect):
-            self.window.blit(component.value, rect)
-
-    def draw_multiplayer_offline(self):
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                sys.exit(0)
-
-            single_player_selection_screen[0].click(event)
-            single_player_selection_screen[2].handle_click(event)
-            single_player_selection_screen[3].handle_click(event)
-
-        for component, rect in zip(single_player_selection_screen, single_player_selection_screen_rect):
             self.window.blit(component.value, rect)
 
     def handle_current_state(self):
@@ -173,11 +171,9 @@ class GameState:
             self.draw_multiplayer_online()
         elif self.currentState == 'single':
             self.draw_single_screen()
-        elif self.currentState == 'offline':
-            self.draw_multiplayer_offline()
-        elif self.currentState == 'end':
-            self.draw_end_screen()
+        elif self.currentState == 'single_r':
+            self.draw_single_r_screen()
 
 
 window = pygame.display.set_mode(dimen.window_size)
-game_state = GameState(window, 'end')
+game_state = GameState(window, 'main')
