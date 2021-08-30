@@ -29,6 +29,10 @@ class Image:
         self.rect = self.value.get_rect()
         set_position(self.rect, pos[0], pos[1], pos[2], pos[3], pos[4], pos[5])
 
+    def change_image(self, src):
+        self.value = pygame.image.load(src)
+        self.rect = self.value.get_rect()
+
 
 class Text:
     def __init__(self, text, size, color, pos=(-1, -1, -1, -1, -1, -1), sys_font=None, f='Ubuntu', callback=None):
@@ -51,7 +55,7 @@ class Text:
             self.color = color
         self.text = text
         self.value.fill(colors.bg_color)
-        self.value = self.font.render(text, self.size, color)
+        self.value = self.font.render(text, self.size, self.color)
         self.rect = self.value.get_rect()
 
     def click(self, event):

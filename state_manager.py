@@ -5,6 +5,7 @@ import pygame.mixer as mixer
 
 import colors
 import logic
+import neural_player
 from components import *
 from string_vars import *
 import dimen
@@ -19,13 +20,41 @@ m_player = 2
 
 def board_callback(board: Board, box: int):
     global player
-    if player is None:
+    if player is None or chosen_w is None:
         return
-    board.check(box, player)
-    if player == 1:
-        player = 2
+
+    board.check(box, chosen_w)
+
+    mat = []
+    for x in board.checked:
+        if x == 0:
+            mat.append(0)
+        elif x is chosen_w:
+            mat.append(-1)
+        else:
+            mat.append(1)
+    print(mat)
+
+    single_player_components[2].update(text_ai_turn)
+    i = neural_player.predict_move(mat)
+    board.check(i, 1 if chosen_w == 2 else 2)
+
+    x = logic.check_who_won(board.checked)
+    if x[0]:
+        if x[1] is chosen_w:
+            start_new_game_screen[1].change_image('assets/hooray.png')
+        else:
+            start_new_game_screen[1].change_image('assets/sad.png')
+        start_new_game_screen[2].update(text_u_won if x[1] is chosen_w else text_u_lose, colors.cross if x[1] is chosen_w else colors.red)
+        game_state.currentState = 'end'
     else:
-        player = 1
+        x = logic.check_draw(board.checked)
+        if x:
+            start_new_game_screen[1].change_image('assets/sad.png')
+            start_new_game_screen[2].update(text_d, colors.black)
+            game_state.currentState = 'end'
+
+    single_player_components[2].update(text_ur_turn)
 
 
 def mp_board_callback(board: Board, box: int):
@@ -66,6 +95,11 @@ def button_callback(button: Button):
         print("Start button clicked, Single player")
         if chosen_w == 1 or chosen_w == 2:
             game_state.currentState = 'single_r'
+            if chosen_w == 1:
+                single_player_components[2].update(text_ai_turn)
+                i = neural_player.predict_move([0 for _ in range(9)])
+                single_player_components[1].check(i, 2)
+                single_player_components[2].update(text_ur_turn)
     elif button.text == text_play_off:
         print("Play Offline")
         game_state.currentState = 'offline'
@@ -75,6 +109,9 @@ def button_callback(button: Button):
     elif button.text == text_play_again:
         clean()
         game_state.currentState = 'offline'
+    elif button.text == text_new_game:
+        clean()
+        game_state.currentState = 'single'
 
 
 def select_cross(cross: Cross):
@@ -143,7 +180,8 @@ online_connect_components = [
 
 single_player_components = [
     TextButton(back_symbol, dimen.size_symbol, colors.primary, symbol_callback, dimen.back_pos),
-    Board(dimen.board_size, dimen.board_pos, dimen.board_mat, board_callback)
+    Board(dimen.board_size, dimen.board_pos, dimen.board_mat, board_callback),
+    Text(text_ur_turn, dimen.size_heading_small, colors.cross, dimen.turn_pos, f='Righteous')
 ]
 
 multiplayer_components = [
@@ -164,8 +202,9 @@ single_player_selection_screen = [
 start_new_game_screen = [
     TextButton(back_symbol, dimen.size_symbol, colors.primary, symbol_callback, dimen.back_pos),
     Image('assets/hooray.png', dimen.hooray_pos),
-    Text("You Won!", dimen.size_heading_small, colors.primary, dimen.choose_pos, f='Righteous'),
-    Button(text_new_game, dimen.button_text_size, dimen.button_size, colors.white, colors.red, button_callback, dimen.start_pos),
+    Text(text_u_won, dimen.size_heading_small, colors.primary, dimen.choose_pos, f='Righteous'),
+    Button(text_new_game, dimen.button_text_size, dimen.button_size, colors.white, colors.red, button_callback, dimen.again_pos),
+    Button(text_main_menu, dimen.button_text_size, dimen.button_size, colors.white, colors.red, button_callback, dimen.menu_pos),
 ]
 
 end_mp_components = [
@@ -193,6 +232,11 @@ class GameState:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit(0)
+
+            start_new_game_screen[0].click(event)
+            start_new_game_screen[3].click(event)
+            start_new_game_screen[4].click(event)
+
         for component, rect in zip(start_new_game_screen, start_new_game_screen_rect):
             self.window.blit(component.value, rect)
 
