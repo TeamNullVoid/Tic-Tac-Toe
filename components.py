@@ -39,6 +39,7 @@ class Text:
         self.text = text
         self.color = color
         self.font = font
+        self.pos = pos
         self.size = size
         self.value = font.render(text, size, color)
         self.rect = self.value.get_rect()

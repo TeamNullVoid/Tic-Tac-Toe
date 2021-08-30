@@ -3,6 +3,8 @@ import sys
 import pygame.event
 import pygame.mixer as mixer
 
+import colors
+import logic
 from components import *
 from string_vars import *
 import dimen
@@ -37,7 +39,18 @@ def mp_board_callback(board: Board, box: int):
         else:
             m_player = 1
 
-        multiplayer_components[2].update(text_x_turn if m_player == 2 else text_o_turn, colors.cross if m_player == 2 else colors.circle)
+        won = logic.check_who_won(board.checked)
+        print(won)
+        if won[0]:
+            end_mp_components[0].update(text_x_win if won[1] == 2 else text_o_win, colors.cross if won[1] == 2 else colors.circle)
+            game_state.currentState = 'end_m'
+        else:
+            tie = logic.check_draw(board.checked)
+            if tie:
+                end_mp_components[0].update(text_draw, colors.black)
+                game_state.currentState = 'end_m'
+            else:
+                multiplayer_components[2].update(text_x_turn if m_player == 2 else text_o_turn, colors.cross if m_player == 2 else colors.circle)
 
 
 def button_callback(button: Button):
@@ -55,6 +68,12 @@ def button_callback(button: Button):
             game_state.currentState = 'single_r'
     elif button.text == text_play_off:
         print("Play Offline")
+        game_state.currentState = 'offline'
+    elif button.text == text_main_menu:
+        clean()
+        game_state.currentState = 'main'
+    elif button.text == text_play_again:
+        clean()
         game_state.currentState = 'offline'
 
 
@@ -78,18 +97,22 @@ def select_circle(circle: Circle):
     pass
 
 
+def clean():
+    single_player_components[1].clean()
+    multiplayer_components[1].clean()
+    global chosen_w, player, m_player
+    player = 2
+    m_player = 2
+    chosen_w = None
+    multiplayer_components[2].update(text_x_turn if m_player == 2 else text_o_turn, colors.cross if m_player == 2 else colors.circle)
+    single_player_selection_screen[2].unselect()
+    single_player_selection_screen[3].unselect()
+
+
 def symbol_callback(text: Text):
     mixer.music.play()
     if text.text == back_symbol:
-        single_player_components[1].clean()
-        multiplayer_components[1].clean()
-        global chosen_w, player, m_player
-        player = 2
-        m_player = 2
-        chosen_w = None
-        multiplayer_components[2].update(text_x_turn if m_player == 2 else text_o_turn, colors.cross if m_player == 2 else colors.circle)
-        single_player_selection_screen[2].unselect()
-        single_player_selection_screen[3].unselect()
+        clean()
         game_state.currentState = 'main'
 
 
@@ -145,6 +168,14 @@ start_new_game_screen = [
     Button(text_new_game, dimen.button_text_size, dimen.button_size, colors.white, colors.red, button_callback, dimen.start_pos),
 ]
 
+end_mp_components = [
+    Text(text_x_win, dimen.size_heading, colors.cross, dimen.center, f='Righteous'),
+    Button(text_play_again, dimen.button_text_size, dimen.button_size, colors.white, colors.red, button_callback, dimen.again_pos),
+    Button(text_main_menu, dimen.button_text_size, dimen.button_size, colors.white, colors.red, button_callback, dimen.menu_pos),
+    Image('assets/hooray.png', dimen.hooray_pos_m)
+]
+
+end_mp_components_rect = [component.rect for component in end_mp_components]
 online_connect_components_rect = [component.rect for component in online_connect_components]
 main_screen_components_rect = [component.rect for component in main_screen_components]
 single_player_components_rect = [component.rect for component in single_player_components]
@@ -162,9 +193,8 @@ class GameState:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit(0)
-        for component,rect in zip(start_new_game_screen, start_new_game_screen_rect):
+        for component, rect in zip(start_new_game_screen, start_new_game_screen_rect):
             self.window.blit(component.value, rect)
-
 
     def draw_main(self):
         for event in pygame.event.get():
@@ -187,6 +217,18 @@ class GameState:
 
         for component, rect in zip(online_connect_components, online_connect_components_rect):
             self.window.blit(component.value, rect)
+
+    def draw_end_mp(self):
+        for e in pygame.event.get():
+            if e.type == pygame.QUIT:
+                sys.exit(0)
+
+            end_mp_components[1].click(e)
+            end_mp_components[2].click(e)
+
+        for component, rect in zip(end_mp_components, end_mp_components_rect):
+            self.window.blit(component.value, rect)
+        pass
 
     def draw_single_screen(self):
         for event in pygame.event.get():
@@ -233,6 +275,8 @@ class GameState:
             self.draw_multiplayer_offline()
         elif self.currentState == 'end':
             self.draw_end_screen()
+        elif self.currentState == 'end_m':
+            self.draw_end_mp()
 
 
 window = pygame.display.set_mode(dimen.window_size)
